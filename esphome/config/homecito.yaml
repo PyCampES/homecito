@@ -1,0 +1,32 @@
+esphome:
+  name: homecito
+  friendly_name: homecito
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "H3ys2bk6wttDfuXN9UfQD052Dq1zWk9/Ycl2zCcXWLY="
+
+ota:
+  - platform: esphome
+    password: "d3f1d5a801216262a0cd40554a08b346"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Homecito Fallback Hotspot"
+    password: "sCy2VIY1OwdO"
+
+captive_portal:
+    

@@ -1,0 +1,43 @@
+networks:
+  containers:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+services:
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2025.4
+    container_name: homeassistant
+    hostname: homeassistant
+
+    # It needs to run in the same network than the host
+    # to be able to see the other devices (e.g. bulbs, sensors, etc)
+    network_mode: host
+
+    privileged: true
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - ./homeassistant/config:/config
+      - /run/dbus:/run/dbus:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  esphome:
+    container_name: esphome
+    hostname: esphome
+    image: ghcr.io/esphome/esphome:2024.12.4
+    volumes:
+      - ./esphome/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    restart: unless-stopped
+    privileged: true
+    # Runs in port 6052 by default
+    # You can connect at http://homestation:6052
+    network_mode: host
+    environment:
+      - USERNAME=
+      - PASSWORD=
