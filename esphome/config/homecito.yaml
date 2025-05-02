@@ -41,8 +41,8 @@ ble_client:
         # Disable BIPing when the link is lost
         - ble_client.ble_write: 
             id: itag
-            service_uuid: "1803"
-            characteristic_uuid: "2A06"
+            service_uuid: "FFE0"
+            characteristic_uuid: "FFE2"
             value: [0x00]
 
 sensor:
