@@ -4,8 +4,6 @@ esphome:
 
 esp32:
   board: esp32dev
-  framework:
-    type: arduino
 
 # Enable logging
 logger:
@@ -30,3 +28,44 @@ wifi:
 
 captive_portal:
     
+
+esp32_ble_tracker:
+
+
+ble_client:
+  - mac_address: FF:FF:11:95:4E:50
+    id: itag
+    on_connect: 
+      then:
+        - delay: 2s
+        # Disable BIPing when the link is lost
+        - ble_client.ble_write: 
+            id: itag
+            service_uuid: "1803"
+            characteristic_uuid: "2A06"
+            value: [0x00]
+
+sensor:
+  - platform: ble_client
+    type: characteristic
+    ble_client_id: itag
+    characteristic_uuid: "FFE1"
+    service_uuid: "FFE0"
+    id: itag_button
+    name: "iTag"
+    icon: "mdi:button"
+    notify: true
+    update_interval: never
+    on_notify:
+      then:
+        # Switch the state of the itag_switch binary sensor on putton press
+        - binary_sensor.template.publish:
+            id: itag_switch
+            state: !lambda "return !id(itag_switch).state;"
+
+
+# Binary sensor to save state       
+binary_sensor:
+  - platform: template
+    id: itag_switch
+    name: "iTag switch"
